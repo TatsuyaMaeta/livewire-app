@@ -1,3 +1,4 @@
+‘|’|”|”
 
 // プロジェクト作成 
 composer create-project "laravel/laravel=9.*" livewire-app
@@ -30,3 +31,10 @@ https://tanden.dev/%E3%82%88%E3%81%8F%E4%BD%BF%E3%81%86composer%E3%82%B3%E3%83%9
 composer require laravel/jetstream:"2.9.0"
 
 https://packagist.org/packages/laravel/jetstream#v2.9.0
+
+
+
+storageからimageを引っ張ってきて表示させるにはシンボリックリンクが必要
+```
+php artisan storage:link
+```
