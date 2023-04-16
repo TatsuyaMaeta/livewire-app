@@ -1,4 +1,7 @@
-‘|’|”|”
+‘|’|”|”|″|“
+
+### Laravel9 LivewireでCRUD登録・表示・更新・削除・検索・画像アップロード・プレビュー・バリデーションtutrial
+URL : https://youtu.be/dj0UfTkSQbE
 
 // プロジェクト作成 
 composer create-project "laravel/laravel=9.*" livewire-app
@@ -38,3 +41,38 @@ storageからimageを引っ張ってきて表示させるにはシンボリッ�
 ```
 php artisan storage:link
 ```
+
+x-jet-dialog-modalタグ内の情報はvendor > jetstream > components > dialog-modal.blade.phpの内容に影響される。 <br>
+dialog-modal.blade.php内では
+```php
+    <div class="px-6 py-4">
+        <div class="text-lg">
+            {{ $title }}
+        </div>
+
+        <div class="mt-4">
+            {{ $content }}
+        </div>
+    </div>
+
+    <div class="flex flex-row justify-end px-6 py-4 bg-gray-100 text-right">
+        {{ $footer }}
+    </div>
+```
+と言った構造になっており、3つのcontentが入ってくる設計になっている。
+それに従って渡す情報は
+
+```php
+        <x-slot name="title">
+            ~略~
+        </x-slot>
+        <x-slot name="content">
+            ~略~
+        </x-slot>
+        <x-slot name="footer">
+            ~略~
+        </x-slot>
+```
+となっていないといけない。
+渡されてくるはずのx-slot footerがないせいでエラーだった
+

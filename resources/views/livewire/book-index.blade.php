@@ -1,7 +1,10 @@
 <div class="max-w-6xl mx-auto">
-    book index
 
     <div class="m-2 p-2">
+        <div class="text-right m-2 p-2">
+            <input type="text" wire:model="search" id="search" class="border-gray-300 rounded-md" placeholder="キーワード" />
+            <x-jet-button class="bg-blue-600" wire:click="showBookModal">登録</x-jet-button>
+        </div>
         <table class="w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
@@ -11,6 +14,7 @@
                     <th class="p-4 text-gray-500 text-left">price</th>
                     <th class="p-4 text-gray-500 text-left">Description</th>
                     <th class="p-4 text-gray-500 text-right">Edit</th>
+                    <th class="p-4 text-gray-500 text-right">Del</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -24,8 +28,14 @@
                     <td class="p-4 whitespace-nowrap">{{ $book->price }}</td>
                     <td class="p-4 whitespace-nowrap">{!! nl2br($book->description) !!}</td>
                     <td class="p-4 text-right text-sm">
-                        編集
-                        削除
+                        <x-jet-button class="bg-green-600" wire:click="showEditBookModal({{ $book->id }})">
+                            編集
+                        </x-jet-button>
+                    </td>
+                    <td class="p-4 text-right text-sm">
+                        <x-jet-button class="bg-red-400" wire:click="deleteBook({{ $book->id }})">
+                            削除
+                        </x-jet-button>
                     </td>
                 </tr>
                 @endforeach
@@ -33,11 +43,23 @@
         </table>
         <div class="m-2 p-2">{{ $books->links() }}</div>
     </div>
+
+
     <x-jet-dialog-modal wire:model="liveModal">
+        @if ($editWork)
         <x-slot name="title">
-            <h2 class="text-green-600">登録</h2>
+            <h2 class="text-green-600">編集</h2>
         </x-slot>
+        @else
+        <x-slot name="title">
+            <h2 class="text-blue-600">登録</h2>
+        </x-slot>
+        @endif
+
         <x-slot name="content">
+            @if (session()->has("message"))
+            <h3 class="p-2 text-2xl text-green-600">{{ session("message") }}</h3>
+            @endif
             <form enctype="multipart/form-data">
 
                 <x-jet-label for="title" value="Title" />
@@ -47,9 +69,15 @@
                 <x-jet-label for="image" value="Book Image" class="mt-2" />
                 <input type="file" id="image" wire:model="newImage" class="block w-full bg-white border border-gray-400 rounded-md py-2 px-3" />
                 @error('newImage') <span class="error text-red-400">{{ $message }}</span> @enderror
+                <x-jet-label for="image" value="Book Image" class="mt-2" />
+
                 @if ($newImage)
                 Photo Preview:
                 <img src="{{ $newImage->temporaryUrl() }}" class="w-48">
+                @else
+                @if ($oldImage)
+                <img src="{{ Storage::url($oldImage) }}" class="w-48">
+                @endif
                 @endif
                 <x-jet-label for="price" value="Price" />
                 <input type="text" id="price" wire:model.lazy="price" class="block w-full bg-white border border-gray-400 rounded-md" />
@@ -62,11 +90,13 @@
             </form>
         </x-slot>
         <x-slot name="footer">
+            @if ($editWork)
+            <x-jet-button wire:click="updateBook({{ $Id }})">編集実行</x-jet-button>
+            @else
             <x-jet-button wire:click="bookPost">登録実行</x-jet-button>
+            @endif
         </x-slot>
     </x-jet-dialog-modal>
-    <div class="text-right m-2 p-2">
-        <x-jet-button class="bg-blue-600" wire:click="showBookModal">登録</x-jet-button>
-    </div>
+
 
 </div>
